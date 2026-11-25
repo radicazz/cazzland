@@ -43,6 +43,7 @@ export function Terminal({ minimized, openApp, closeSelf }: PanelProps) {
   const [session, dispatch] = useReducer(sessionReducer, reduced, (instant) => createSession(bootSteps(readSystem()), instant));
   const [value, setValue] = useState("");
   const [history, setHistory] = useState<string[]>([]);
+  const lastListed = useRef<string | null>(null);
   const historyIndex = useRef<number | null>(null);
   const draft = useRef("");
   const scroller = useRef<HTMLDivElement>(null);
@@ -157,9 +158,16 @@ export function Terminal({ minimized, openApp, closeSelf }: PanelProps) {
         if (event.shiftKey || !value.trim()) return;
         const result = complete(value);
         if (result.value === value && !result.options.length) return;
-        event.preventDefault();
-        if (result.value !== value) setValue(result.value);
-        else dispatch({ type: "append", blocks: [promptLine(value), line({ text: result.options.join("  "), tone: "mint" })] });
+        if (result.value !== value) {
+          event.preventDefault();
+          lastListed.current = null;
+          setValue(result.value);
+        } else if (lastListed.current !== value) {
+          // First Tab lists the options; a second Tab on the same line falls through so focus can move on.
+          event.preventDefault();
+          lastListed.current = value;
+          dispatch({ type: "append", blocks: [promptLine(value), line({ text: result.options.join("  "), tone: "mint" })] });
+        }
         break;
       }
     }

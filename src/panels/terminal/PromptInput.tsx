@@ -39,6 +39,7 @@ export function PromptInput({ ref, prompt, value, hidden, onChange, onKeyDown }:
           ref={ref}
           className="term-input"
           type="text"
+          maxLength={200}
           value={value}
           aria-label="Terminal command input"
           autoComplete="off"

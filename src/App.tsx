@@ -91,7 +91,8 @@ export default function App() {
   const closePanel = useCallback((id: PanelId) => latest.current.dismiss(id, true), []);
 
   function show(id: PanelId) {
-    pendingFocus.current = id;
+    // Don't pull focus away from a window that already holds it (e.g. `terminal` typed in the terminal).
+    if (!windowEls.current[id]?.contains(document.activeElement)) pendingFocus.current = id;
     if (exiting[id]) {
       onExited(id);
       setGen((current) => ({ ...current, [id]: (current[id] ?? 0) + 1 }));

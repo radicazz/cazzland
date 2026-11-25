@@ -51,7 +51,9 @@ export function AppMenu({ open, onOpen, buttonRef }: Props) {
       ref={root}
       onKeyDown={onKeyDown}
       onBlur={(event) => {
-        if (expanded && !root.current?.contains(event.relatedTarget as Node | null)) setExpanded(false);
+        // A null relatedTarget happens when Safari/macOS Firefox don't focus a clicked button; the
+        // outside-pointerdown listener already handles real outside clicks, so ignore it here.
+        if (expanded && event.relatedTarget && !root.current?.contains(event.relatedTarget as Node)) setExpanded(false);
       }}
     >
       <button
