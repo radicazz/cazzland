@@ -1,51 +1,14 @@
 .video-app {
   display: grid;
-  gap: 0.95rem;
-  padding: clamp(0.75rem, 2.5vw, 1.1rem);
-}
-
-.video-app__heading,
-.video-app__details,
-.video-app__channel {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-}
-
-.video-app__heading,
-.video-app__details {
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.video-app__channel {
-  font-weight: 700;
-}
-
-.video-app__mark {
-  display: grid;
-  place-items: center;
-  width: 1.65rem;
-  height: 1.1rem;
-  border-radius: 0.24rem;
-  background: #d71928;
-  color: #fff;
-  font-size: 0.59rem;
-}
-
-.video-app a {
-  text-underline-offset: 0.2em;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: inherit;
+  gap: 0.85rem;
 }
 
 .video-app__player {
-  aspect-ratio: 16 / 9;
   display: grid;
-  border: 1px solid #161717;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
-  background-color: #121415;
+  border-radius: 0.65rem;
+  background: #100d17;
 }
 
 .video-app__player iframe,
@@ -53,16 +16,17 @@
   display: block;
   width: 100%;
   height: 100%;
+  min-width: 0;
   min-height: 0;
   border: 0;
 }
 
 .video-app__play {
+  position: relative;
   display: grid;
   place-items: center;
-  position: relative;
   padding: 0;
-  background: #121415;
+  background: #100d17;
   cursor: pointer;
 }
 
@@ -80,41 +44,65 @@
 }
 
 .video-app__play-icon {
-  display: grid;
   position: relative;
+  display: grid;
   place-items: center;
-  width: 3.5rem;
-  height: 2.5rem;
-  border: 1px solid #fff8;
-  border-radius: 0.45rem;
-  box-shadow: 0 2px 14px #0007;
-  background: #111e;
+  width: 3.55rem;
+  height: 3.55rem;
+  border: 1px solid #ffffff65;
+  border-radius: 50%;
+  box-shadow: 0 3px 18px #0007;
+  background: #17111ce8;
+  color: #fff;
 }
 
-.video-app__play-icon::before {
-  content: '';
-  margin-left: 0.16rem;
-  border-block: 0.47rem solid transparent;
-  border-left: 0.73rem solid #fff;
+.video-app__play-icon svg {
+  margin-left: 0.14rem;
 }
 
 .video-app__play:hover .video-app__play-icon,
 .video-app__play:focus-visible .video-app__play-icon {
-  background: #d71928;
+  background: #a82959;
+}
+
+.video-app__details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
 }
 
 .video-app__caption {
+  min-width: 0;
   overflow-wrap: anywhere;
-}
-
-.video-app__caption p {
-  margin: 0 0 0.23rem;
-  opacity: 0.76;
-  font-size: 0.68rem;
 }
 
 .video-app__caption h2 {
   margin: 0;
   font-size: 1rem;
-  font-weight: 700;
+  line-height: 1.3;
+  font-weight: 650;
+}
+
+.video-app__caption time {
+  display: block;
+  margin-top: 0.2rem;
+  color: #cec2d0;
+  font-size: 0.8rem;
+}
+
+.video-app__details a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #ffb2d0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.video-app__details a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
