@@ -1,6 +1,6 @@
 # Cazzland
 
-Cazzland is a personal website built with React, TypeScript, and Vite. Use **pnpm only** (never npm or yarn; the version is pinned in `package.json` via `packageManager`, enable it with `corepack enable`) and keep `pnpm-lock.yaml` in sync with dependency changes. Vercel serves the frontend and the latest-video endpoint.
+Cazzland is a personal website built with React, TypeScript, and Vite. Use **pnpm only** (never npm or yarn; pnpm 10, pinned in `package.json` via `packageManager`; Vercel picks pnpm 10 from the v9 lockfile, so do not regenerate the lockfile with another major version) and keep `pnpm-lock.yaml` in sync with dependency changes. Vercel serves the frontend and the latest-video endpoint.
 
 ## Where to look first
 

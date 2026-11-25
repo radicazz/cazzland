@@ -4,7 +4,7 @@ Cazzland is Cazz’s personal website, presented as an interactive desktop: an a
 
 ## Development
 
-Use Node.js 22.12 or later and [pnpm](https://pnpm.io) (`corepack enable` picks up the pinned version).
+Use Node.js 22.12 or later and [pnpm](https://pnpm.io) 10 (the exact version is pinned in `package.json`; install it with `npm install -g pnpm@10`).
 
 ```sh
 pnpm install --frozen-lockfile
@@ -27,7 +27,7 @@ Start with [AGENTS.md](AGENTS.md), which links to the docs in [docs/](docs/): ar
 
 ## Vercel
 
-Import the repository with the repository root as the project root. [vercel.json](vercel.json) selects the Vite preset, installs with `pnpm install --frozen-lockfile`, builds with `pnpm run build`, publishes `dist/`, and sets security headers (including a Content-Security-Policy). The video endpoint needs no environment variables or API key. [Vercel’s Vite documentation](https://vercel.com/docs/frameworks/frontend/vite)
+Import the repository with the repository root as the project root. [vercel.json](vercel.json) selects the Vite preset, installs with `pnpm install --frozen-lockfile` (Vercel selects pnpm 10 from the v9 lockfile), builds with `pnpm run build`, publishes `dist/`, and sets security headers (including a Content-Security-Policy). The video endpoint needs no environment variables or API key. [Vercel’s Vite documentation](https://vercel.com/docs/frameworks/frontend/vite)
 
 Before the first production deploy, check a preview: the home page loads with a clean console, `/api/latest-video` returns JSON, and set an absolute `og:image` URL in `index.html` once the domain is known.
 
