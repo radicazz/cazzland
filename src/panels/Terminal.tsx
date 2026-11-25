@@ -1,6 +1,7 @@
 import { Icon } from "../components/Icon";
+import type { PanelProps } from ".";
 
-export function About() {
+export function Terminal(_props: PanelProps) {
   return (
     <div className="desk-profile">
       <img src="/portrait.webp" alt="" />

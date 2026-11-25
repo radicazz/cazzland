@@ -68,6 +68,11 @@ export default function App() {
     return () => window.removeEventListener("blur", onBlur);
   }, []);
 
+  // Panel bodies get stable callbacks (via a latest-ref) so PanelContent's memo keeps working.
+  const latest = useRef({ show: (_id: PanelId) => {}, dismiss: (_id: PanelId, _close: boolean) => {} });
+  const openApp = useCallback((id: PanelId) => latest.current.show(id), []);
+  const closePanel = useCallback((id: PanelId) => latest.current.dismiss(id, true), []);
+
   function show(id: PanelId) {
     pendingFocus.current = id;
     if (exiting[id]) {
@@ -85,6 +90,8 @@ export default function App() {
     dispatch({ type: close ? "close" : "minimize", id });
     launchers.current[id]?.focus({ preventScroll: true });
   }
+
+  latest.current = { show, dismiss };
 
   return (
     <div className="desktop">
@@ -108,6 +115,8 @@ export default function App() {
               closing={Boolean(ghost)}
               launcherRect={launcherRect}
               onExited={onExited}
+              openApp={openApp}
+              closePanel={closePanel}
               bounds={bounds}
               state={win}
               active={!ghost && active === id}

@@ -39,7 +39,7 @@ button:focus-visible, a:focus-visible, .desk-title:focus-visible, .desk-window:f
 [data-app="community"] { --app-color: #dec6ff; --app-tint: #4c356d; }
 [data-app="socials"] { --app-color: #c3ddff; --app-tint: #294767; }
 [data-app="support"] { --app-color: #ffd0aa; --app-tint: #673e37; }
-[data-app="about"] { --app-color: #bbecdf; --app-tint: #28534f; }
+[data-app="terminal"] { --app-color: #bbecdf; --app-tint: #28534f; }
 
 .desktop {
   position: relative;
