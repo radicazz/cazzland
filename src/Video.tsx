@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { PanelProps } from './panels';
+import { FEATURED, watchUrl as watchUrlFor } from './desktop/featured';
 import { Play, Youtube } from 'lucide-react';
 import './video.css';
 
@@ -9,11 +10,7 @@ type Upload = {
   published: string;
 };
 
-const featured: Upload = {
-  id: 'nbfGBSerBJY',
-  title: 'FREE & UNCENSORED AI',
-  published: '2026-11-20T14:37:54+00:00',
-};
+const featured: Upload = FEATURED;
 const dateFormat = new Intl.DateTimeFormat('en', {
   month: 'short',
   day: 'numeric',
@@ -59,7 +56,7 @@ export default function Video({ minimized }: PanelProps) {
     return () => controller.abort();
   }, [playing]);
 
-  const watchUrl = `https://www.youtube.com/watch?v=${upload.id}`;
+  const watchUrl = watchUrlFor(upload.id);
   const thumbnailUrl = upload.id === featured.id
     ? '/latest-video.jpg'
     : `https://i.ytimg.com/vi/${upload.id}/hqdefault.jpg`;

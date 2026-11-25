@@ -1,0 +1,166 @@
+/* Terminal panel (src/panels/Terminal.tsx). See docs/terminal.md. */
+.desk-terminal {
+  --term-bg: #0f0a14;
+  --term-fg: #ece2ee;
+  --term-muted: #b4a3b9; /* 7:1 on --term-bg */
+  --term-accent: var(--accent);
+}
+
+/* The terminal fills its window; its own .term element scrolls. */
+.desk-terminal .desk-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 90% 60% at 18% 0%, #9865fc1c, transparent 70%),
+    radial-gradient(ellipse 70% 50% at 100% 100%, #f3599f12, transparent 70%),
+    #0f0a14f2;
+}
+/* Static CRT scanlines, drawn over the text but never intercepting pointer events. */
+.desk-terminal .desk-body::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, #ffffff06 0 1px, transparent 1px 3px);
+}
+
+.term {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding: 10px 16px 12px;
+  container-type: inline-size;
+  color: var(--term-fg);
+  font-family: ui-monospace, "JetBrains Mono", "Fira Code", SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13.5px;
+  line-height: 1.5;
+  font-variant-ligatures: none;
+  cursor: text;
+  scrollbar-width: thin;
+  scrollbar-color: #9865fc66 transparent;
+}
+.term::-webkit-scrollbar { width: 8px; }
+.term::-webkit-scrollbar-thumb { border-radius: 8px; background: #9865fc66; }
+.term::-webkit-scrollbar-thumb:hover { background: #ff9fc399; }
+.term ::selection { background: #9865fc80; color: #fff; }
+
+.term-line, .term-row { min-height: 1.5em; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Colours. All text tones are >= 4.5:1 on --term-bg. */
+.t-accent { color: var(--term-accent); }
+.t-pink { color: #ff6fae; text-shadow: 0 0 10px #f3599f59; }
+.t-rose { color: #ff86bd; }
+.t-violet { color: #ad86ff; text-shadow: 0 0 10px #9865fc59; }
+.t-lilac { color: #c9a8ff; }
+.t-mint { color: #8ff0c8; }
+.t-sky { color: #9fd6ff; }
+.t-gold { color: #ffd38a; }
+.t-muted { color: var(--term-muted); }
+.t-err { color: #ff8197; }
+.t-bold { font-weight: 700; }
+.t-c0 { color: #4a3d57; }
+.t-c1 { color: #f3599f; }
+.t-c2 { color: #8ff0c8; }
+.t-c3 { color: #ffd38a; }
+.t-c4 { color: #9865fc; }
+.t-c5 { color: #ff9fc3; }
+.t-c6 { color: #9fd6ff; }
+.t-c7 { color: #ece2ee; }
+.t-c0, .t-c1, .t-c2, .t-c3, .t-c4, .t-c5, .t-c6, .t-c7 { letter-spacing: -0.05em; }
+
+.term-link {
+  color: #9fd6ff;
+  text-decoration: underline;
+  text-decoration-color: #9fd6ff70;
+  text-underline-offset: 3px;
+  border-radius: 2px;
+}
+.term-link:hover { color: var(--term-accent); text-decoration-color: currentColor; }
+.term a.term-link:focus-visible { outline: 2px solid var(--term-accent); outline-offset: 2px; }
+
+/* fastfetch: logo column + info column; stacks when the window is narrow. */
+.term-fetch {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0 22px;
+  margin: 4px 0 0.6em;
+}
+.term-logo .term-row { white-space: pre; font-weight: 700; }
+.term-info .term-row > .t-accent:first-child { font-weight: 700; }
+.term-info .term-row:last-child { margin-top: 0.5em; }
+@container (max-width: 540px) {
+  .term-fetch { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+}
+@container (max-width: 250px) {
+  .term-logo { display: none; }
+}
+
+.term-row.is-revealing {
+  animation: term-reveal 200ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 24ms);
+}
+@keyframes term-reveal {
+  from { opacity: 0; transform: translateX(-6px); }
+}
+
+/* Prompt: real input over a mirror that draws the text and the block cursor. */
+.term-prompt { display: flex; align-items: flex-start; white-space: pre; }
+.term-prompt.is-waiting {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+.term-field { position: relative; flex: 1; min-width: 0; }
+.term-mirror { display: block; min-height: 1.5em; white-space: pre-wrap; overflow-wrap: anywhere; }
+.term-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+  outline: none;
+}
+.term-input::selection { background: #ff9fc355; color: transparent; }
+
+/* Hollow when the input is not focused; solid and blinking when it is (the focus indicator). */
+.term-cursor {
+  border-radius: 1px;
+  box-shadow: inset 0 0 0 1px var(--term-accent);
+}
+.term-field:focus-within .term-cursor, .term-cursor.is-solid {
+  background: var(--term-accent);
+  color: var(--term-bg);
+  box-shadow: 0 0 10px #ff9fc366;
+}
+.term-field:focus-within .term-cursor { animation: term-blink 1.1s steps(1, end) infinite; }
+@keyframes term-blink {
+  50% { opacity: 0; }
+}
+
+@media (max-width: 760px) {
+  /* Windows are auto-height cards on mobile, so the terminal sets its own height. */
+  .desk-terminal .term { flex: none; height: min(64svh, 540px); padding: 10px 12px 16px; font-size: 12.5px; }
+  /* >= 16px stops iOS from zooming on focus; the input text is transparent anyway. */
+  .term-input { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .term-row.is-revealing, .term-field:focus-within .term-cursor { animation: none; }
+}
