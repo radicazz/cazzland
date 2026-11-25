@@ -6,7 +6,7 @@ export interface ClockOptions {
 export interface ClockText {
   /** Desktop form, e.g. "Tue 25 Nov  14:07". */
   short: string;
-  /** Phone form: time only. */
+  /** Phone form: short date and time, e.g. "25 Nov 14:07". */
   compact: string;
   /** Full date and time for the title tooltip. */
   long: string;
@@ -18,7 +18,7 @@ export function formatClock(date: Date, { locale, timeZone }: ClockOptions = {})
   const time = fmt({ hour: "numeric", minute: "2-digit" });
   return {
     short: `${fmt({ weekday: "short", day: "numeric", month: "short" })}  ${time}`,
-    compact: time,
+    compact: `${fmt({ day: "numeric", month: "short" })} ${time}`,
     long: fmt({ dateStyle: "full", timeStyle: "long" }),
     iso: date.toISOString(),
   };
