@@ -3,7 +3,7 @@
 ## Automated
 
 ```sh
-pnpm test            # vitest: geometry, window reducer, clock format, feed parser, API handler
+pnpm test            # vitest (tests inside api/ must live in api/_lib/): geometry, window reducer, clock format, feed parser, API handler
 pnpm run build       # tsc --noEmit + vite build
 node --check api/latest-video.js
 ```

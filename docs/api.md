@@ -8,7 +8,7 @@ Vercel Function (`api/latest-video.js`). Reads the public YouTube Atom feed for 
 | `POST`/other | 405 | empty, `Allow: GET, HEAD` | – |
 | Upstream error, timeout (5 s), malformed feed | 502 | `{ error }` | browser `no-store`; CDN 60 s |
 
-Parsing lives in `api/_lib/feed.js` (`latestFromFeed`): tolerates attributes on `<entry>`, CDATA titles and XML entities; returns `null` for anything malformed. Tests: `api/latest-video.test.js`.
+Parsing lives in `api/_lib/feed.js` (`latestFromFeed`): tolerates attributes on `<entry>`, CDATA titles and XML entities; returns `null` for anything malformed. Tests: `api/_lib/latest-video.test.js` (kept under `_lib` so Vercel does not deploy it as a function).
 
 ## Client fallback
 

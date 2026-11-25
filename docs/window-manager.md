@@ -37,6 +37,15 @@ A window is **open** iff it has an entry in `windows` and an id in `order`.
 - A click inside the video iframe never reaches React; `App` listens for window `blur` and raises the window containing the focused iframe.
 - Focus lost to `<body>` when a window maximizes is moved to its Maximize/Restore button.
 
+## Animation layer (outside the reducer)
+
+The reducer is instant; animation is layered on top in `App.tsx`/`Window.tsx`:
+
+- A **closed** window is kept mounted in an `exiting` snapshot in `App` (outside the reducer) until its exit ends, then removed by `onExited`. It is `inert` and non-interactive meanwhile. With reduced motion it is removed immediately.
+- Reopening during that exit bumps a per-panel `gen` counter, which is part of the React `key`, so the window remounts fresh instead of finishing the exit.
+- Each window has a motion phase (`entering | minimizing | restoring | morphing | idle`) derived from `minimized`/`maximized` changes. Every phase has a timeout fallback because `animationend` never fires under reduced motion or `display: none`.
+- Minimize aims a genie animation at the dock tile's rect; maximize/restore uses a short-lived `is-morphing` geometry transition. Never transition geometry otherwise: drag and resize must stay instant.
+
 ## Changing it
 
 Add an action to the reducer **and a test first**, then wire it in `App.tsx`. Do not add parallel state in components.
