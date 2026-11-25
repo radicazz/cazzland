@@ -1,0 +1,15 @@
+.desk-menubar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 clamp(14px, 2.2vw, 32px);
+  border-bottom: 1px solid var(--line);
+  background: var(--chrome);
+}
+
+.desk-brand { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 650; letter-spacing: 0.02em; }
+.desk-brand .desk-icon { color: var(--accent); width: 20px; height: 20px; }
+
+@media (max-width: 760px) {
+  .desk-menubar { height: 50px; }
+}

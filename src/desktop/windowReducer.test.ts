@@ -1,0 +1,61 @@
+import { describe, expect, it } from "vitest";
+import { activeWindow, hasVisibleMaximized, initialWindows, windowReducer, type WindowsState } from "./windowReducer";
+
+const bounds = { x: 20, y: 20, width: 400, height: 300 };
+const run = (state: WindowsState, ...actions: Parameters<typeof windowReducer>[1][]) =>
+  actions.reduce(windowReducer, state);
+
+describe("windowReducer", () => {
+  it("starts with about under videos, videos active", () => {
+    expect(initialWindows.order).toEqual(["about", "videos"]);
+    expect(activeWindow(initialWindows)).toBe("videos");
+  });
+
+  it("show opens a closed window on top", () => {
+    const s = run(initialWindows, { type: "show", id: "socials" });
+    expect(s.order).toEqual(["about", "videos", "socials"]);
+    expect(activeWindow(s)).toBe("socials");
+  });
+
+  it("raise reorders open windows but never opens a closed one", () => {
+    expect(run(initialWindows, { type: "raise", id: "about" }).order).toEqual(["videos", "about"]);
+    expect(run(initialWindows, { type: "raise", id: "support" })).toBe(initialWindows);
+  });
+
+  it("minimize keeps bounds and maximized; show restores and raises", () => {
+    const s = run(
+      initialWindows,
+      { type: "setBounds", id: "videos", bounds },
+      { type: "toggleMaximize", id: "videos" },
+      { type: "minimize", id: "videos" },
+    );
+    expect(activeWindow(s)).toBe("about");
+    expect(hasVisibleMaximized(s)).toBe(false);
+    const back = run(s, { type: "show", id: "videos" });
+    expect(back.windows.videos).toEqual({ minimized: false, maximized: true, bounds });
+    expect(activeWindow(back)).toBe("videos");
+  });
+
+  it("close discards bounds and maximized state", () => {
+    const s = run(
+      initialWindows,
+      { type: "setBounds", id: "about", bounds },
+      { type: "toggleMaximize", id: "about" },
+      { type: "close", id: "about" },
+      { type: "show", id: "about" },
+    );
+    expect(s.windows.about).toEqual({ minimized: false, maximized: false });
+  });
+
+  it("order always matches the open windows", () => {
+    const s = run(initialWindows, { type: "show", id: "socials" }, { type: "close", id: "videos" }, { type: "minimize", id: "about" });
+    expect(s.order.toSorted()).toEqual(Object.keys(s.windows).toSorted());
+  });
+
+  it("ignores actions for windows that are not open", () => {
+    for (const type of ["minimize", "close", "toggleMaximize"] as const) {
+      expect(run(initialWindows, { type, id: "support" })).toBe(initialWindows);
+    }
+    expect(run(initialWindows, { type: "setBounds", id: "support", bounds })).toBe(initialWindows);
+  });
+});

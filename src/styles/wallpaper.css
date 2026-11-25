@@ -1,0 +1,36 @@
+/* Animated wallpaper. Layers live on .desktop::before/::after; animate only transform and opacity. */
+.desktop::before, .desktop::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+}
+
+.desktop::before {
+  background: linear-gradient(90deg, #170b24b3, #180d2130 35%, #170d24a0 100%),
+    linear-gradient(0deg, #100a17aa, transparent 55%),
+    url("/wallpaper.webp") center / cover no-repeat;
+}
+
+.desktop::after {
+  inset: -24%;
+  background: radial-gradient(ellipse at 36% 42%, #f3599f42, transparent 37%),
+    radial-gradient(ellipse at 65% 67%, #9865fc37, transparent 36%);
+  animation: wallpaper-light 20s ease-in-out infinite alternate;
+}
+
+@keyframes wallpaper-light {
+  from { transform: translate3d(-8%, 4%, 0); opacity: 0.52; }
+  to { transform: translate3d(9%, -5%, 0); opacity: 1; }
+}
+
+@media (max-width: 760px) {
+  .desktop::before, .desktop::after { position: fixed; }
+  .desktop::before { background-position: center, center, 30% center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desktop::after { animation: none; }
+}
+.wallpaper { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { PanelProps } from './panels';
 import { Play, Youtube } from 'lucide-react';
 import './video.css';
 
@@ -20,9 +21,14 @@ const dateFormat = new Intl.DateTimeFormat('en', {
   timeZone: 'UTC',
 });
 
-export default function Video() {
+export default function Video({ minimized }: PanelProps) {
   const [upload, setUpload] = useState(featured);
   const [playing, setPlaying] = useState(false);
+
+  // Minimizing the window stops playback so audio never continues out of sight.
+  useEffect(() => {
+    if (minimized) setPlaying(false);
+  }, [minimized]);
 
   useEffect(() => {
     const controller = new AbortController();
