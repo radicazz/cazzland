@@ -1,6 +1,6 @@
 /* Bodies of the simple panels (About, link lists). Video has its own video.css. */
-.desk-about { display: grid; gap: 14px; }
-.desk-about h2 { margin: 0 0 6px; color: var(--muted); font-size: 12px; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; }
+.desk-about { display: grid; gap: 22px; }
+.desk-about h2 { margin: 0 0 9px; color: var(--muted); font-size: 12px; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; }
 .desk-profile {
   display: grid;
   grid-template-columns: clamp(58px, 22%, 96px) minmax(0, 1fr);

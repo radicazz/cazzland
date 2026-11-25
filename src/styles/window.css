@@ -125,7 +125,7 @@
     gap: 12px;
     max-width: 540px;
     margin-inline: auto;
-    padding: clamp(32px, 8svh, 96px) 12px calc(108px + env(safe-area-inset-bottom));
+    padding: clamp(12px, 3svh, 28px) 12px calc(108px + env(safe-area-inset-bottom));
   }
   .desk-window, .desk-window.is-max { position: relative; inset: auto; left: auto; top: auto; width: 100%; height: auto; scroll-margin-top: 8px; }
   .desk-titlebar, .desk-titlebar:active { cursor: default; touch-action: auto; }
