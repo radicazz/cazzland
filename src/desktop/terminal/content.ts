@@ -113,11 +113,9 @@ export const FETCH_FIELDS: { label: string; value: (sys: SystemInfo) => string |
   },
 ];
 
-/** Links printed after opening an app by name (e.g. `socials`). */
+/** Links printed after opening an app by name (e.g. `about`). */
 export const APP_LINKS: Record<string, string[]> = {
-  socials: ["youtube", "github", "x"],
-  community: ["discord"],
-  support: ["patreon"],
+  about: ["youtube", "github", "x", "discord", "patreon"],
 };
 
 /** Login banner shown before `login:` during boot. */

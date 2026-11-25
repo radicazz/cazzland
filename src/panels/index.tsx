@@ -2,7 +2,7 @@ import { memo, type ComponentType } from "react";
 import type { PanelId } from "../desktop/panels";
 import Video from "../Video";
 import { Terminal } from "./Terminal";
-import { Community, Socials, Support } from "./Links";
+import { About } from "./About";
 
 /**
  * Props every panel body receives.
@@ -20,9 +20,7 @@ export type PanelProps = {
 const content: Record<PanelId, ComponentType<PanelProps>> = {
   videos: Video,
   terminal: Terminal,
-  socials: Socials,
-  community: Community,
-  support: Support,
+  about: About,
 };
 
 /** Memoized so dragging a window does not re-render every panel body. */

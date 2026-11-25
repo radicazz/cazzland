@@ -5,7 +5,7 @@
  */
 import { clamp, PADDING, type Bounds, type Size } from "./geometry";
 
-export type PanelId = "videos" | "community" | "socials" | "support" | "terminal";
+export type PanelId = "about" | "terminal" | "videos";
 
 type PanelMeta = {
   /** Name used in the dock, shortcuts and aria-labels. */
@@ -16,13 +16,11 @@ type PanelMeta = {
   min?: Size;
 };
 
-export const PANEL_IDS: PanelId[] = ["terminal", "videos", "community", "socials", "support"];
+export const PANEL_IDS: PanelId[] = ["terminal", "about", "videos"];
 
 export const PANELS: Record<PanelId, PanelMeta> = {
   videos: { label: "Videos", title: "Latest upload", min: { width: 380, height: 366 } },
-  community: { label: "Community" },
-  socials: { label: "Socials" },
-  support: { label: "Support" },
+  about: { label: "About", min: { width: 320, height: 430 } },
   terminal: { label: "Terminal", title: "cazz@cazzland: ~", min: { width: 420, height: 300 } },
 };
 
@@ -67,7 +65,6 @@ function mainWindows(area: Size): { videos: Bounds; terminal: Bounds } {
 export function defaultBounds(id: PanelId, area: Size): Bounds {
   const { width, height } = area;
   if (id === "videos" || id === "terminal") return mainWindows(area)[id];
-  // Cascade the small link panels down and to the right.
-  const step = PANEL_IDS.indexOf(id) - 2;
-  return { x: width * 0.17 + step * 27, y: height * 0.24 + step * 28, width: 350, height: id === "socials" ? 240 : 156 };
+  // About: a profile card with five link rows, off-centre so it does not hide the default pair.
+  return { x: width * 0.17, y: height * 0.14, width: 360, height: 470 };
 }

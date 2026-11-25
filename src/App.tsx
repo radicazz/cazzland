@@ -9,7 +9,7 @@ import { prefersReducedMotion } from "./desktop/motion";
 import { defaultBounds, PANEL_IDS, PANELS, type PanelId } from "./desktop/panels";
 import { useGestures } from "./desktop/useGestures";
 import { DESKTOP_QUERY, useWorkspace } from "./desktop/useWorkspace";
-import { activeWindow, hasVisibleMaximized, initialWindows, windowReducer, type WindowState } from "./desktop/windowReducer";
+import { activeWindow, hasVisibleMaximized, initialWindows, mobileWindows, windowReducer, type WindowState } from "./desktop/windowReducer";
 import "./styles/tokens.css";
 import "./styles/wallpaper.css";
 import "./styles/menubar.css";
@@ -20,7 +20,7 @@ import "./styles/dock.css";
 import "./styles/panels.css";
 
 export default function App() {
-  const [state, dispatch] = useReducer(windowReducer, initialWindows);
+  const [state, dispatch] = useReducer(windowReducer, undefined, () => (matchMedia(DESKTOP_QUERY).matches ? initialWindows : mobileWindows));
   const workspace = useRef<HTMLElement>(null);
   const { area, areaRef, isDesktop } = useWorkspace(workspace);
   const { startPointer, startKeyboard } = useGestures(areaRef, isDesktop, dispatch);

@@ -145,9 +145,13 @@ describe("run", () => {
       expect(exec(`open ${id}`).effects).toEqual([{ type: "open", id }]);
     }
     expect(out(exec("open videos"))).toBe("opening videos...");
-    expect(hrefs(exec("socials"))).toEqual(["https://www.youtube.com/@cazz", "https://github.com/cazzwastaken", "https://twitter.com/cazzwastaken"]);
-    expect(hrefs(exec("open community"))).toEqual(["https://discord.gg/xyxbg5VpcG"]);
-    expect(hrefs(exec("support"))).toEqual(["https://www.patreon.com/cazzwastaken"]);
+    expect(hrefs(exec("about"))).toEqual([
+      "https://www.youtube.com/@cazz",
+      "https://github.com/cazzwastaken",
+      "https://twitter.com/cazzwastaken",
+      "https://discord.gg/xyxbg5VpcG",
+      "https://www.patreon.com/cazzwastaken",
+    ]);
     expect(exec("Videos").effects).toEqual([{ type: "open", id: "videos" }]);
   });
 
@@ -227,15 +231,15 @@ describe("complete", () => {
 
   it("extends to the common prefix and lists options when ambiguous", () => {
     const c = complete("c");
-    expect(c.options).toEqual(expect.arrayContaining(["cat", "clear", "community"]));
+    expect(c.options).toEqual(expect.arrayContaining(["cat", "clear"]));
     expect(c.value).toBe("c");
-    expect(complete("su").options).toEqual([]); // only "support" -> unique
-    expect(complete("su").value).toBe("support ");
+    expect(complete("ab").options).toEqual([]); // only "about" -> unique
+    expect(complete("ab").value).toBe("about ");
   });
 
   it("completes arguments for open, cat, ls and emerge", () => {
     expect(complete("open dis").value).toBe("open discord ");
-    expect(complete("open s").options).toEqual(["socials", "support"]);
+    expect(complete("open a").value).toBe("open about ");
     expect(complete("cat ab").value).toBe("cat about.txt ");
     expect(complete("ls li").value).toBe("ls links/");
     expect(complete("emerge --s").value).toBe("emerge --sync ");
