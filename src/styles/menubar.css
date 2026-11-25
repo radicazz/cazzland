@@ -10,6 +10,11 @@
 .desk-brand { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 650; letter-spacing: 0.02em; }
 .desk-brand .desk-icon { color: var(--accent); width: 20px; height: 20px; }
 
+.desk-clock { font-size: 14px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; white-space: pre; cursor: default; }
+.desk-clock-compact { display: none; }
+
 @media (max-width: 760px) {
   .desk-menubar { height: 50px; }
+  .desk-clock-full { display: none; }
+  .desk-clock-compact { display: inline; }
 }
