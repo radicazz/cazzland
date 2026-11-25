@@ -1,23 +1,35 @@
 # Cazzland
 
-Cazzland is Cazz’s personal website, presented as an interactive desktop. The desktop brings together Cazz’s profile, links, and latest video.
+Cazzland is Cazz’s personal website, presented as an interactive desktop: an animated wallpaper, a menu bar with a live clock, a dock, desktop shortcuts, and real windows you can drag, resize, minimize, maximize and close. It shows Cazz’s profile, links, and latest video. Built with React, TypeScript and Vite.
 
 ## Development
 
-Use Node.js 22.12 or later and npm.
+Use Node.js 22.12 or later and [pnpm](https://pnpm.io) 10 (the exact version is pinned in `package.json`; install it with `npm install -g pnpm@10`).
 
 ```sh
-npm ci
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-`npm run typecheck` checks the TypeScript source. `npm run build` checks types and builds the production site into `dist/`. After building, run `npm run preview` to serve the production output locally.
+| Command | What it does |
+| --- | --- |
+| `pnpm dev` | Vite dev server |
+| `pnpm test` | Unit tests (window manager, geometry, clock, feed parser, API handler) |
+| `pnpm run typecheck` | TypeScript check only |
+| `pnpm run build` | Typecheck + production build into `dist/` |
+| `pnpm run preview` | Serve `dist/` locally |
 
-The Vite dev and preview servers show the bundled featured upload. The deployed site can refresh it through `/api/latest-video`, a Vercel Function that reads Cazz’s public YouTube feed. The bundled video remains available if the feed is unavailable.
+The Vite dev and preview servers show the bundled featured upload. The deployed site refreshes it through `/api/latest-video`, a Vercel Function that reads Cazz’s public YouTube feed; the bundled video stays if the feed is unavailable.
+
+## Working on it (humans and agents)
+
+Start with [AGENTS.md](AGENTS.md), which links to the docs in [docs/](docs/): architecture, window manager, adding a panel, design tokens, API, and testing/QA.
 
 ## Vercel
 
-Import the repository into Vercel with the repository root as the project root. [vercel.json](vercel.json) selects the Vite framework preset, installs with `npm ci`, and publishes `dist/` after running `npm run build`. Vercel also deploys the video endpoint, which requires no environment variables or YouTube API key. [Vercel’s Vite documentation](https://vercel.com/docs/frameworks/frontend/vite)
+Import the repository with the repository root as the project root. [vercel.json](vercel.json) selects the Vite preset, installs with `pnpm install --frozen-lockfile` (Vercel selects pnpm 10 from the v9 lockfile), builds with `pnpm run build`, publishes `dist/`, and sets security headers (including a Content-Security-Policy). The video endpoint needs no environment variables or API key. [Vercel’s Vite documentation](https://vercel.com/docs/frameworks/frontend/vite)
+
+Before the first production deploy, check a preview: the home page loads with a clean console, `/api/latest-video` returns JSON, and set an absolute `og:image` URL in `index.html` once the domain is known.
 
 ## License
 

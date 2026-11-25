@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import type { PanelProps } from './panels';
+import { Play, Youtube } from 'lucide-react';
 import './video.css';
 
 type Upload = {
@@ -12,7 +14,6 @@ const featured: Upload = {
   title: 'FREE & UNCENSORED AI',
   published: '2026-11-20T14:37:54+00:00',
 };
-const channelUrl = 'https://www.youtube.com/@cazz';
 const dateFormat = new Intl.DateTimeFormat('en', {
   month: 'short',
   day: 'numeric',
@@ -20,9 +21,14 @@ const dateFormat = new Intl.DateTimeFormat('en', {
   timeZone: 'UTC',
 });
 
-export default function Video() {
+export default function Video({ minimized }: PanelProps) {
   const [upload, setUpload] = useState(featured);
   const [playing, setPlaying] = useState(false);
+
+  // Minimizing the window stops playback so audio never continues out of sight.
+  useEffect(() => {
+    if (minimized) setPlaying(false);
+  }, [minimized]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -60,15 +66,6 @@ export default function Video() {
 
   return (
     <section className="video-app" aria-label="Latest YouTube upload">
-      <div className="video-app__heading">
-        <div className="video-app__channel">
-          <span className="video-app__mark" aria-hidden="true">▶</span>
-          <span>@cazz</span>
-        </div>
-        <a href={`${channelUrl}/videos`} target="_blank" rel="noreferrer">
-          View channel <span aria-hidden="true">↗</span>
-        </a>
-      </div>
       <div className="video-app__player">
         {playing ? (
           <iframe
@@ -86,17 +83,19 @@ export default function Video() {
             onClick={() => setPlaying(true)}
           >
             <img src={thumbnailUrl} alt="" draggable="false" />
-            <span className="video-app__play-icon" aria-hidden="true" />
+            <span className="video-app__play-icon" aria-hidden="true">
+              <Play size={21} fill="currentColor" />
+            </span>
           </button>
         )}
       </div>
       <div className="video-app__details">
         <div className="video-app__caption">
-          <p>Latest upload · <time dateTime={upload.published}>{dateFormat.format(new Date(upload.published))}</time></p>
           <h2>{upload.title}</h2>
+          <time dateTime={upload.published}>{dateFormat.format(new Date(upload.published))}</time>
         </div>
         <a href={watchUrl} target="_blank" rel="noreferrer">
-          Watch on YouTube <span aria-hidden="true">↗</span>
+          <Youtube size={17} aria-hidden="true" /> Watch on YouTube
         </a>
       </div>
     </section>

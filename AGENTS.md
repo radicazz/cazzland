@@ -1,6 +1,19 @@
 # Cazzland
 
-Cazzland is a personal website built with React, TypeScript, and Vite. Use npm and keep `package-lock.json` in sync with dependency changes. Vercel serves the frontend and the latest-video endpoint.
+Cazzland is a personal website built with React, TypeScript, and Vite. Use **pnpm only** (never npm or yarn; pnpm 10, pinned in `package.json` via `packageManager`; Vercel picks pnpm 10 from the v9 lockfile, so do not regenerate the lockfile with another major version) and keep `pnpm-lock.yaml` in sync with dependency changes. Vercel serves the frontend and the latest-video endpoint.
+
+## Where to look first
+
+Read these before changing the area they cover:
+
+- [docs/architecture.md](docs/architecture.md): file map, data flow, rules of thumb.
+- [docs/window-manager.md](docs/window-manager.md): window state machine, invariants, interaction contract.
+- [docs/adding-a-panel.md](docs/adding-a-panel.md): recipe for a new window.
+- [docs/design-tokens.md](docs/design-tokens.md): palette, motion and accessibility rules.
+- [docs/api.md](docs/api.md): `/api/latest-video` contract and fallback.
+- [docs/testing.md](docs/testing.md): automated checks and the manual QA checklist.
+
+Keep logic in pure, tested modules (`src/desktop/*`, `api/_lib`); keep components thin. When behavior changes, update the matching doc in the same commit.
 
 ## Agent roles
 
@@ -17,8 +30,8 @@ Report changed files, interface changes, commands and outcomes, and any remainin
 
 ## Verification
 
-1. Install dependencies with `npm ci`. Use `npm run dev` while developing. Run `npm run build` before handing off changes. It runs the TypeScript check and builds production files in `dist/`. Use `npm run preview` to inspect that output in a browser.
-2. For desktop changes, check the initial layout at desktop and phone widths. Exercise dock buttons, stacking, drag, minimize, maximize, restore, and close where applicable. Confirm the relevant controls are reachable by keyboard, focus is visible, and the mobile layout and dock remain usable.
+1. Install dependencies with `pnpm install --frozen-lockfile`. Use `pnpm dev` while developing. Run `pnpm test` and `pnpm run build` before handing off changes. The build runs the TypeScript check and builds production files in `dist/`. Use `pnpm run preview` to inspect that output in a browser.
+2. For desktop changes, check the initial layout at desktop and phone widths. Exercise dock buttons, stacking, drag, minimize, maximize, restore, and close where applicable. Confirm the relevant controls are reachable by keyboard, focus is visible, and the mobile layout and dock remain usable. For motion changes, also check with `prefers-reduced-motion: reduce`: all animation must stop and no window may get stuck. The full checklist is in `docs/testing.md`.
 3. For video changes, check the featured thumbnail, click-to-load player, and YouTube links. Exercise a successful refresh and an unavailable feed to verify the bundled fallback. When changing `api/latest-video.js`, run `node --check api/latest-video.js` and exercise valid and malformed feeds, upstream failures, and unsupported methods against the handler.
 4. For deployment changes, review the Vercel build settings and check both the home page and `/api/latest-video` on a Vercel preview when available. Report local build results, browser results, and deployed results with their actual environments.
 

@@ -1,0 +1,139 @@
+.desk-workspace { position: relative; min-width: 0; min-height: 0; }
+
+.desk-window {
+  position: absolute;
+  left: var(--window-x);
+  top: var(--window-y);
+  width: var(--window-width);
+  height: var(--window-height);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 16px 44px #0e0816a0;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.desk-window.is-active { border-color: #e6a5bf70; }
+/* Explicit geometry (not inset/auto) so max <-> restore can interpolate. */
+.desk-window.is-max { left: 12px; top: 12px; width: calc(100% - 24px); height: calc(100% - 24px); }
+
+/* Motion. Only transform/opacity animate, except the short-lived .is-morphing geometry transition. */
+.desk-window.is-entering { animation: win-open 180ms cubic-bezier(0.16, 1, 0.3, 1); }
+.desk-window.is-closing { animation: win-close 140ms cubic-bezier(0.4, 0, 1, 1) forwards; pointer-events: none; }
+.desk-window.is-minimizing { animation: win-minimize 240ms cubic-bezier(0.5, 0, 0.9, 0.5) forwards; pointer-events: none; }
+.desk-window.is-restoring { animation: win-restore 240ms cubic-bezier(0.2, 0.7, 0.3, 1); }
+@media (min-width: 761px) {
+  .desk-window.is-morphing {
+    transition: left 240ms cubic-bezier(0.2, 0.8, 0.2, 1), top 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      width 240ms cubic-bezier(0.2, 0.8, 0.2, 1), height 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 150ms ease, box-shadow 150ms ease;
+  }
+}
+
+@keyframes win-open { from { opacity: 0; transform: scale(0.94); } }
+@keyframes win-close { to { opacity: 0; transform: scale(0.94); } }
+@keyframes win-minimize {
+  to {
+    opacity: 0;
+    transform: translate(var(--genie-x, 0px), var(--genie-y, 0px)) scale(var(--genie-sx, 0.94), var(--genie-sy, 0.94));
+  }
+}
+@keyframes win-restore {
+  from {
+    opacity: 0;
+    transform: translate(var(--genie-x, 0px), var(--genie-y, 0px)) scale(var(--genie-sx, 0.94), var(--genie-sy, 0.94));
+  }
+}
+
+.desk-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 7px 0 15px;
+  border-bottom: 1px solid #ffffff18;
+  background: #ffffff06;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.desk-titlebar:active { cursor: grabbing; }
+.is-max .desk-titlebar { cursor: default; }
+/* Active windows get a tinted title bar; inactive ones recede. */
+.is-active .desk-titlebar { background: linear-gradient(90deg, color-mix(in srgb, var(--app-tint) 55%, transparent), #ffffff08); }
+.desk-window:not(.is-active) .desk-title { opacity: 0.72; }
+
+.desk-title, .desk-controls { display: flex; align-items: center; }
+.desk-title { gap: 9px; font-size: 14px; font-weight: 650; }
+.desk-title:focus-visible { border-radius: 3px; }
+.desk-title .desk-icon { color: var(--app-color); }
+.desk-controls { gap: 4px; }
+.desk-controls button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+}
+.desk-controls button:hover { background: #ffffff13; color: white; }
+.desk-controls .desk-close:hover { background: #91334a; color: white; }
+
+.desk-body { min-height: 0; overflow: auto; flex: 1; padding: 13px 14px 18px; }
+/* Maximized video: cap the player by the window height so the details row never scrolls away. */
+.desk-videos.is-max .desk-body { container-type: size; }
+.desk-videos.is-max .desk-body > * { max-width: min(960px, calc((100cqh - 130px) * 16 / 9)); margin-inline: auto; }
+
+.desk-resize {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px 0 0;
+  background: var(--surface);
+  color: #cdb0c6;
+  cursor: nwse-resize;
+  touch-action: none;
+}
+.desk-resize::after {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 12px;
+  height: 12px;
+  content: "";
+  background: repeating-linear-gradient(135deg, transparent 0 3px, currentColor 3px 4px);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+.desk-resize:hover { color: white; }
+.desk-resize:focus-visible { outline-offset: -3px; }
+
+@media (max-width: 760px) {
+  .desk-workspace {
+    display: grid;
+    align-content: start;
+    gap: 12px;
+    max-width: 540px;
+    margin-inline: auto;
+    padding: clamp(32px, 8svh, 96px) 12px calc(108px + env(safe-area-inset-bottom));
+  }
+  .desk-window, .desk-window.is-max { position: relative; inset: auto; left: auto; top: auto; width: 100%; height: auto; scroll-margin-top: 8px; }
+  .desk-titlebar, .desk-titlebar:active { cursor: default; touch-action: auto; }
+  .desk-controls button { width: 44px; height: 44px; }
+  .desk-controls .desk-maximize, .desk-resize { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desk-window, .desk-window.is-morphing { transition: none; }
+  .desk-window.is-entering, .desk-window.is-closing, .desk-window.is-minimizing, .desk-window.is-restoring { animation: none; }
+}

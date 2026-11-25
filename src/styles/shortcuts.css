@@ -1,0 +1,32 @@
+.desk-shortcuts {
+  position: absolute;
+  top: clamp(10px, 3vh, 32px);
+  left: clamp(12px, 2vw, 32px);
+  display: grid;
+  gap: clamp(3px, 1vh, 12px);
+}
+.desk-shortcuts:focus-within { z-index: 6; }
+
+.desk-shortcuts button, .desk-dock button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.desk-shortcuts button { width: 86px; text-shadow: 0 1px 6px #100615; }
+.desk-shortcuts button:hover, .desk-dock button:hover { background: #ffffff15; border-color: #ffffff24; }
+
+@media (max-height: 550px) and (min-width: 761px) {
+  .desk-shortcuts { grid-template-columns: repeat(2, 76px); }
+  .desk-shortcuts button { width: 76px; }
+}
+@media (max-width: 900px) { .desk-shortcuts { display: none; } }
