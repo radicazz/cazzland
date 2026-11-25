@@ -3,7 +3,7 @@ import { Icon } from "../components/Icon";
 export function About() {
   return (
     <div className="desk-profile">
-      <img src="/portrait.png" alt="" />
+      <img src="/portrait.webp" alt="" />
       <div>
         <h1>
           Hey, I’m Cazz<span>.</span>
