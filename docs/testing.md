@@ -15,7 +15,12 @@ Pure modules are where the logic lives, so that is where tests go. Add a reducer
 Desktop (1440×900 and 1024×700) and phone (390×844):
 
 - [ ] First load: About and Videos open, nothing clipped (also at 800 and 880px wide).
-- [ ] Dock: click opens/focuses; click on active window minimizes; focus returns to the dock button.
+- [ ] Default layout: Terminal left, Videos right, side by side, clear of the shortcuts column (>900px); at 800px wide Terminal overlaps Videos; no "Watch on YouTube" clipping.
+- [ ] Tabs (desktop): one per open window; click activates, click on active minimizes, minimized tab is dimmed, x closes; labels collapse to icons at <=1000px; no bar overflow at 761px; focus ring visible.
+- [ ] Launcher menu: the "Desktop" brand opens every app (also while a window is maximized and at 800px); Escape returns focus to the brand; outside click closes.
+- [ ] Genie: minimize flies to the window's tab (not the top-left corner); reduced motion has no animation.
+- [ ] Focus: after minimize focus is on the tab; after close on a neighbouring tab or the brand; never `<body>`.
+- [ ] Phone: dock click opens/focuses; dock is hidden on desktop.
 - [ ] Windows: drag, resize (including to the minimum), minimize, maximize, restore, close, reopen (defaults restored).
 - [ ] Keyboard only: Tab reaches every control with a visible focus ring; arrow keys move/resize; Shift = larger steps.
 - [ ] Maximize Videos at 1024×700: no scrolling inside the window.

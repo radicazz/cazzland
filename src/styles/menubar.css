@@ -1,16 +1,66 @@
 .desk-menubar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 14px;
   padding: 0 clamp(14px, 2.2vw, 32px);
   border-bottom: 1px solid var(--line);
   background: var(--chrome);
 }
 
-.desk-brand { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 650; letter-spacing: 0.02em; }
+.desk-appmenu { position: relative; flex-shrink: 0; }
+.desk-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  margin-left: -10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+.desk-brand:hover, .desk-brand[aria-expanded="true"] { background: #ffffff15; border-color: #ffffff24; }
+
+.desk-menu {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: -10px;
+  min-width: 210px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #1b1421;
+  box-shadow: 0 14px 40px #0e0816d0;
+}
+.desk-menu button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.desk-menu button:hover { background: #ffffff15; border-color: #ffffff24; }
+.desk-menu button:focus-visible { outline-offset: -2px; background: #ffffff15; }
+.desk-menu-label { flex: 1; }
+.desk-menu-open { font-size: 11px; font-weight: 600; color: var(--muted); }
+
+.desk-tabs-spacer { flex: 1; }
 .desk-brand .desk-icon { color: var(--accent); width: 20px; height: 20px; }
 
-.desk-clock { font-size: 14px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; white-space: pre; cursor: default; }
+.desk-clock { flex-shrink: 0; margin-left: auto; font-size: 14px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; white-space: pre; cursor: default; }
 .desk-clock-compact { display: none; }
 
 @media (max-width: 760px) {

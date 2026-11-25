@@ -20,6 +20,9 @@ type Props = {
   launcherRect: (id: PanelId) => DOMRect | undefined;
   onExited?: (id: PanelId) => void;
   register: (id: PanelId, element: HTMLElement | null) => void;
+  /** Stable callbacks handed to the panel body (see PanelProps). */
+  openApp: (id: PanelId) => void;
+  closePanel: (id: PanelId) => void;
   onRaise: (id: PanelId) => void;
   onMinimize: (id: PanelId) => void;
   onClose: (id: PanelId) => void;
@@ -29,7 +32,7 @@ type Props = {
 };
 
 export function Window({
-  id, bounds, state, active, zIndex, isDesktop, closing = false, launcherRect, onExited, register,
+  id, bounds, state, active, zIndex, isDesktop, closing = false, launcherRect, onExited, register, openApp, closePanel,
   onRaise, onMinimize, onClose, onToggleMaximize, onPointerGesture, onKeyGesture,
 }: Props) {
   const { label, title = label } = PANELS[id];
@@ -167,7 +170,7 @@ export function Window({
         </div>
       </div>
       <div className="desk-body">
-        <PanelContent id={id} minimized={minimized} />
+        <PanelContent id={id} minimized={minimized} openApp={openApp} closePanel={closePanel} />
       </div>
       {!maximized && (
         <button

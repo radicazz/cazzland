@@ -25,10 +25,10 @@ export type WindowAction =
   | { type: "setBounds"; id: PanelId; bounds: Bounds };
 
 export const initialWindows: WindowsState = {
-  order: ["about", "videos"],
+  order: ["videos", "terminal"],
   windows: {
-    about: { minimized: false, maximized: false },
     videos: { minimized: false, maximized: false },
+    terminal: { minimized: false, maximized: false },
   },
 };
 
