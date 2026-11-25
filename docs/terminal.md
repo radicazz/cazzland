@@ -37,7 +37,7 @@ src/styles/terminal.css            Look, colours (`t-<tone>` classes), mobile an
 
 ## Content rules
 
-Facts about Cazz come only from what the site already says: name, handle, topics, the links in `LINKS` and the featured video. `FEATURED_VIDEO` copies the bundled upload in `src/Video.tsx`, so update both together. Playful system lines are fine when they are obviously a joke (`Shell: zsh (cazzsh)`, `Terminal: cazzterm`) or computed live: resolution, locale and time zone, uptime since page load, and `Hardware` only when `navigator.hardwareConcurrency` / `navigator.deviceMemory` exist (otherwise the line is omitted). `APP_LINKS` lists the links printed after opening an app by name (`socials` opens the window and prints YouTube/GitHub/X). Don't invent hardware or personal facts.
+Facts about Cazz come only from what the site already says: name, handle, topics, the links in `LINKS` and the featured video. `FEATURED_VIDEO` copies the bundled upload in `src/Video.tsx`, so update both together. Playful system lines are fine when they are obviously a joke (`Shell: zsh (cazzsh)`, `Terminal: cazzterm`) or computed live: resolution, locale and time zone, uptime since page load, and `Hardware` only when `navigator.hardwareConcurrency` / `navigator.deviceMemory` exist (otherwise the line is omitted). `APP_LINKS` lists the links printed after opening an app by name (`about` opens the window and prints YouTube/GitHub/X/Discord/Patreon). Don't invent hardware or personal facts.
 
 ## Interaction
 
@@ -58,7 +58,7 @@ Facts about Cazz come only from what the site already says: name, handle, topics
 
 ## Commands
 
-`help`, `fastfetch`/`neofetch`, `cat about.txt`, `ls [dir]`, `apps`, `open <app|link>`, `links`, `whoami`, `id`, `hostname`, `uname [-a]`, `pwd`, `cd`, `date`, `uptime`, `echo`, `history`, `clear`, `exit`/`logout`, every app id (`videos`, `community`, `socials`, `support`, `terminal`) and every link id (`youtube`, `github`, `x`/`twitter`, `discord`, `patreon`).
+`help`, `fastfetch`/`neofetch`, `cat about.txt`, `ls [dir]`, `apps`, `open <app|link>`, `links`, `whoami`, `id`, `hostname`, `uname [-a]`, `pwd`, `cd`, `date`, `uptime`, `echo`, `history`, `clear`, `exit`/`logout`, every app id (`about`, `terminal`, `videos`) and every link id (`youtube`, `github`, `x`/`twitter`, `discord`, `patreon`).
 
 ## Easter eggs
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activeWindow, hasVisibleMaximized, initialWindows, windowReducer, type WindowsState } from "./windowReducer";
+import { activeWindow, hasVisibleMaximized, initialWindows, mobileWindows, windowReducer, type WindowsState } from "./windowReducer";
 
 const bounds = { x: 20, y: 20, width: 400, height: 300 };
 const run = (state: WindowsState, ...actions: Parameters<typeof windowReducer>[1][]) =>
@@ -11,15 +11,21 @@ describe("windowReducer", () => {
     expect(activeWindow(initialWindows)).toBe("terminal");
   });
 
+  it("phone default opens About on top of Videos, without the terminal", () => {
+    expect(mobileWindows.order).toEqual(["videos", "about"]);
+    expect(activeWindow(mobileWindows)).toBe("about");
+    expect(mobileWindows.windows.terminal).toBeUndefined();
+  });
+
   it("show opens a closed window on top", () => {
-    const s = run(initialWindows, { type: "show", id: "socials" });
-    expect(s.order).toEqual(["videos", "terminal", "socials"]);
-    expect(activeWindow(s)).toBe("socials");
+    const s = run(initialWindows, { type: "show", id: "about" });
+    expect(s.order).toEqual(["videos", "terminal", "about"]);
+    expect(activeWindow(s)).toBe("about");
   });
 
   it("raise reorders open windows but never opens a closed one", () => {
     expect(run(initialWindows, { type: "raise", id: "videos" }).order).toEqual(["terminal", "videos"]);
-    expect(run(initialWindows, { type: "raise", id: "support" })).toBe(initialWindows);
+    expect(run(initialWindows, { type: "raise", id: "about" })).toBe(initialWindows);
   });
 
   it("minimize keeps bounds and maximized; show restores and raises", () => {
@@ -48,14 +54,14 @@ describe("windowReducer", () => {
   });
 
   it("order always matches the open windows", () => {
-    const s = run(initialWindows, { type: "show", id: "socials" }, { type: "close", id: "videos" }, { type: "minimize", id: "terminal" });
+    const s = run(initialWindows, { type: "show", id: "about" }, { type: "close", id: "videos" }, { type: "minimize", id: "terminal" });
     expect(s.order.toSorted()).toEqual(Object.keys(s.windows).toSorted());
   });
 
   it("ignores actions for windows that are not open", () => {
     for (const type of ["minimize", "close", "toggleMaximize"] as const) {
-      expect(run(initialWindows, { type, id: "support" })).toBe(initialWindows);
+      expect(run(initialWindows, { type, id: "about" })).toBe(initialWindows);
     }
-    expect(run(initialWindows, { type: "setBounds", id: "support", bounds })).toBe(initialWindows);
+    expect(run(initialWindows, { type: "setBounds", id: "about", bounds })).toBe(initialWindows);
   });
 });

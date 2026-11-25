@@ -15,6 +15,17 @@ const AREAS = [
   { width: 800, height: 600 - 54 },
 ];
 
+describe("defaultBounds about", () => {
+  for (const area of AREAS) {
+    it(`fits inside ${area.width}x${area.height} at its minimum size or larger`, () => {
+      const about = fit(defaultBounds("about", area), area, PANELS.about.min);
+      expect(inside(about, area.width, area.height)).toBe(true);
+      expect(about.width).toBeGreaterThanOrEqual(PANELS.about.min!.width);
+      expect(about.height).toBeGreaterThanOrEqual(PANELS.about.min!.height);
+    });
+  }
+});
+
 describe("defaultBounds terminal + videos", () => {
   for (const area of AREAS) {
     describe(`${area.width}x${area.height}`, () => {

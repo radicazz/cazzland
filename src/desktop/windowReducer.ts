@@ -24,11 +24,21 @@ export type WindowAction =
   | { type: "toggleMaximize"; id: PanelId }
   | { type: "setBounds"; id: PanelId; bounds: Bounds };
 
+/** Desktop default. */
 export const initialWindows: WindowsState = {
   order: ["videos", "terminal"],
   windows: {
     videos: { minimized: false, maximized: false },
     terminal: { minimized: false, maximized: false },
+  },
+};
+
+/** Phone default: the terminal is too fiddly on a touch screen, so About leads (and is active, being on top). */
+export const mobileWindows: WindowsState = {
+  order: ["videos", "about"],
+  windows: {
+    videos: { minimized: false, maximized: false },
+    about: { minimized: false, maximized: false },
   },
 };
 

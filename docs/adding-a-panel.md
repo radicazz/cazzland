@@ -11,7 +11,7 @@ Example: a "Merch" panel.
    - `closeSelf()` – close this panel's own window.
 
    Reuse `LinkRow` and the `desk-list` / `desk-link` classes from `src/styles/panels.css`; put new styles in a new `src/styles/<name>.css` imported by `App.tsx` (or by the panel component itself, as `Terminal.tsx` does).
-5. **Open by default?** Add it to `initialWindows` in `windowReducer.ts` (and update the reducer test).
+5. **Open by default?** Add it to `initialWindows` (desktop) and/or `mobileWindows` (phone) in `windowReducer.ts` (and update the reducer test). `App` picks one at first render from the breakpoint and never switches on resize.
 6. **Terminal** – nothing to do: the terminal reads `PANEL_IDS`/`PANELS`, so `merch` and `open merch` launch the panel, and `apps`, `ls apps` and Tab completion list it (see `docs/terminal.md`).
 7. **Check** – `pnpm run build && pnpm test`, then run the desktop QA checklist in `docs/testing.md`. TypeScript will flag any `Record<PanelId, …>` you forgot to extend.
 

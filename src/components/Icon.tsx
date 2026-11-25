@@ -1,8 +1,9 @@
 import {
-  Copy, ExternalLink, Github, Heart, Link2, MessagesSquare, Minus, Square, Terminal, TvMinimalPlay, X, Youtube,
+  CircleUser, Copy, ExternalLink, Github, Heart, Link2, MessagesSquare, Minus, Square, Terminal, TvMinimalPlay, X, Youtube,
 } from "lucide-react";
 
 const icons = {
+  about: CircleUser,
   videos: TvMinimalPlay,
   socials: Link2,
   community: MessagesSquare,

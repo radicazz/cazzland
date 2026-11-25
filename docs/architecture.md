@@ -20,7 +20,7 @@ src/desktop/               Window manager, framework-light
   clockFormat.ts           PURE: menu bar clock formatting + next-minute delay
   motion.ts                PURE: animation durations, reduced-motion check, genie (minimize) vars
 src/components/            Presentational pieces: Window, MenuBar (brand `AppMenu` launcher, `Tabs` of open windows), Dock (mobile only), Shortcuts, Clock, Wallpaper (animated stars/aurora), Icon
-src/panels/                Window bodies; index.tsx maps PanelId -> component
+src/panels/                Window bodies (About, Terminal); index.tsx maps PanelId -> component
 src/Video.tsx              The "Videos" panel (click-to-load player, live refresh, bundled fallback)
 src/styles/                One CSS file per component + tokens.css (see docs/design-tokens.md)
 ```
