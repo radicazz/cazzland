@@ -31,7 +31,10 @@ A window is **open** iff it has an entry in `windows` and an id in `order`.
 
 ## Interaction contract
 
-- Dock click: if the window is active (desktop only) it minimizes, otherwise it `show`s and moves focus into the window. After minimize/close, focus returns to the dock button.
+- **Launchers per breakpoint.** Desktop (>760px): each open window is a tab in the menu bar (`Tabs`, plain `aria-pressed` buttons with `aria-controls`, in a `nav` labelled "Open windows"), ordered by `PANEL_IDS`; the dock is `display: none`. Mobile (<=760px): the fixed dock. Tab/dock click: if the window is active (desktop only) it minimizes, otherwise it `show`s and moves focus into the window. A tab's small x closes the window.
+- **App launcher menu.** The brand ("Desktop") is a button (`AppMenu`, `aria-expanded`) opening a list of every app in `PANEL_IDS`, marking open ones. It is the guaranteed route to a closed app (desktop shortcuts hide at <=900px and while a window is maximized). Opening focuses its first item; Escape closes and returns focus to the brand; outside click or tabbing away closes; choosing an app `show`s it.
+- **Focus return.** After minimize on desktop, focus goes to the window's tab (dock button on mobile). After close, the tab is gone, so focus goes to the next tab, else the previous, else the brand button. Focus must never fall to `<body>`.
+- **Default layout** (`defaultBounds`): Terminal on the left and Videos on the right, side by side with a 16px gutter, same top (8% of height) and height. Terminal starts right of the shortcuts column (130px reserved above 900px, else 12px). Video width is `min(half, (height - 2*PADDING - 150) * 16/9)` but at least the panel minimum, and its height is `width * 9/16 + 150`. If the workspace is narrower than the two minimum widths plus the gutter, Terminal overlaps Videos, offset down.
 - Titlebar drag moves; double-click toggles maximize; the title has `role="button"` and moves with arrow keys (Shift = 48px, else 16px). The resize grip is a button resized with arrow keys.
 - Minimizing the Videos window stops playback (`PanelProps.minimized`).
 - A click inside the video iframe never reaches React; `App` listens for window `blur` and raises the window containing the focused iframe.
@@ -44,7 +47,7 @@ The reducer is instant; animation is layered on top in `App.tsx`/`Window.tsx`:
 - A **closed** window is kept mounted in an `exiting` snapshot in `App` (outside the reducer) until its exit ends, then removed by `onExited`. It is `inert` and non-interactive meanwhile. With reduced motion it is removed immediately.
 - Reopening during that exit bumps a per-panel `gen` counter, which is part of the React `key`, so the window remounts fresh instead of finishing the exit.
 - Each window has a motion phase (`entering | minimizing | restoring | morphing | idle`) derived from `minimized`/`maximized` changes. Every phase has a timeout fallback because `animationend` never fires under reduced motion or `display: none`.
-- Minimize aims a genie animation at the dock tile's rect; maximize/restore uses a short-lived `is-morphing` geometry transition. Never transition geometry otherwise: drag and resize must stay instant.
+- Minimize aims a genie animation at the window's tab icon (the dock tile on mobile; falls back to the brand button, and to the window's own position if there is no target); maximize/restore uses a short-lived `is-morphing` geometry transition. Never transition geometry otherwise: drag and resize must stay instant.
 
 ## Changing it
 

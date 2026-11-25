@@ -45,7 +45,7 @@ button:focus-visible, a:focus-visible, .desk-title:focus-visible, .desk-window:f
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-rows: 54px minmax(0, 1fr) 98px;
+  grid-template-rows: 54px minmax(0, 1fr);
   height: 100dvh;
   min-height: 320px;
   overflow: clip;

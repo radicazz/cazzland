@@ -1,0 +1,73 @@
+/* Open-window tabs in the menu bar (desktop). Mobile uses the dock instead. */
+.desk-tabs {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+.desk-tabs::-webkit-scrollbar { display: none; }
+
+.desk-tab {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--muted);
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.desk-tab:hover { background: #ffffff12; border-color: #ffffff1c; }
+.desk-tab.is-active { color: var(--app-color); background: color-mix(in srgb, var(--app-tint) 70%, transparent); border-color: color-mix(in srgb, var(--app-color) 45%, transparent); }
+.desk-tab.is-minimized .desk-tab-main { opacity: 0.55; }
+
+.desk-tab-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 8px 0 10px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.desk-tab-icon { display: grid; place-items: center; }
+.desk-tab .desk-icon { width: 17px; height: 17px; }
+.desk-tab-main:focus-visible, .desk-tab-close:focus-visible { outline-offset: -2px; }
+
+.desk-tab-close {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 5px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  opacity: 0;
+  cursor: pointer;
+}
+.desk-tab-close .desk-icon { width: 13px; height: 13px; }
+.desk-tab:hover .desk-tab-close, .desk-tab:focus-within .desk-tab-close, .desk-tab-close:focus-visible { opacity: 1; }
+.desk-tab-close:hover { background: #ffffff22; }
+
+/* Narrow desktop: icons only. */
+@media (max-width: 1000px) {
+  .desk-tab-label { display: none; }
+  .desk-tab-main { padding: 0 6px 0 8px; }
+}
+@media (max-width: 760px) { .desk-tabs { display: none; } }
+
+@media (prefers-reduced-motion: reduce) { .desk-tab { transition: none; } }

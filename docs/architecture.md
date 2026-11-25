@@ -19,7 +19,7 @@ src/desktop/               Window manager, framework-light
   useGestures.ts           Pointer drag/resize (rAF-batched) and arrow-key move/resize
   clockFormat.ts           PURE: menu bar clock formatting + next-minute delay
   motion.ts                PURE: animation durations, reduced-motion check, genie (minimize) vars
-src/components/            Presentational pieces: Window, Dock, Shortcuts, MenuBar, Clock, Wallpaper (animated stars/aurora), Icon
+src/components/            Presentational pieces: Window, MenuBar (brand `AppMenu` launcher, `Tabs` of open windows), Dock (mobile only), Shortcuts, Clock, Wallpaper (animated stars/aurora), Icon
 src/panels/                Window bodies; index.tsx maps PanelId -> component
 src/Video.tsx              The "Videos" panel (click-to-load player, live refresh, bundled fallback)
 src/styles/                One CSS file per component + tokens.css (see docs/design-tokens.md)
@@ -32,7 +32,7 @@ src/styles/                One CSS file per component + tokens.css (see docs/des
 Two layouts share the same DOM:
 
 - **Desktop** (`min-width: 761px`): windows are absolutely positioned from CSS variables `--window-x/y/width/height`.
-- **Mobile** (`max-width: 760px`): windows become stacked cards; dragging, resizing and maximize are disabled and the dock is fixed to the bottom.
+- **Mobile** (`max-width: 760px`): windows become stacked cards; dragging, resizing and maximize are disabled and the dock is fixed to the bottom. On desktop the dock is hidden and the menu bar carries one tab per open window plus the app launcher menu.
 
 ## Rules of thumb
 
@@ -42,4 +42,4 @@ Two layouts share the same DOM:
 
 ## Motion
 
-Windows animate open, close (kept mounted in an `exiting` snapshot in `App` until the exit ends), minimize (genie toward the dock icon) and maximize/restore (a short-lived scoped geometry transition). Every phase has a timeout fallback, and with `prefers-reduced-motion: reduce` phases finish immediately. See `docs/design-tokens.md` for the motion rules.
+Windows animate open, close (kept mounted in an `exiting` snapshot in `App` until the exit ends), minimize (genie toward the window's tab icon, or the dock icon on mobile) and maximize/restore (a short-lived scoped geometry transition). Every phase has a timeout fallback, and with `prefers-reduced-motion: reduce` phases finish immediately. See `docs/design-tokens.md` for the motion rules.
