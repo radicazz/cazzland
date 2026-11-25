@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+import { MOTION, prefersReducedMotion } from "../desktop/motion";
 import { PANEL_IDS, PANELS, type PanelId } from "../desktop/panels";
 import { Icon } from "./Icon";
 
@@ -10,6 +12,19 @@ type Props = {
 };
 
 export function Dock({ open, minimized, active, register, onToggle }: Props) {
+  const [bouncing, setBouncing] = useState<PanelId | null>(null);
+  const known = useRef(open);
+
+  // Bounce a tile once when its app newly opens (not on first render).
+  useEffect(() => {
+    const opened = open.find((id) => !known.current.includes(id));
+    known.current = open;
+    if (!opened || prefersReducedMotion()) return;
+    setBouncing(opened);
+    const timer = setTimeout(() => setBouncing(null), MOTION.bounce + 80);
+    return () => clearTimeout(timer);
+  }, [open]);
+
   return (
     <nav className="desk-dock" aria-label="Desktop apps">
       {PANEL_IDS.map((id) => {
@@ -19,7 +34,7 @@ export function Dock({ open, minimized, active, register, onToggle }: Props) {
             type="button"
             key={id}
             data-app={id}
-            className={active === id ? "is-active" : ""}
+            className={`${active === id ? "is-active" : ""}${bouncing === id ? " is-bouncing" : ""}`.trim()}
             aria-expanded={isOpen && !minimized(id)}
             aria-controls={isOpen ? `window-${id}` : undefined}
             ref={(element) => register(id, element)}

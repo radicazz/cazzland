@@ -13,10 +13,40 @@
   border-radius: 16px;
   background: var(--surface);
   box-shadow: 0 16px 44px #0e0816a0;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .desk-window.is-active { border-color: #e6a5bf70; }
-.desk-window.is-max { inset: 12px; width: auto; height: auto; }
+/* Explicit geometry (not inset/auto) so max <-> restore can interpolate. */
+.desk-window.is-max { left: 12px; top: 12px; width: calc(100% - 24px); height: calc(100% - 24px); }
+
+/* Motion. Only transform/opacity animate, except the short-lived .is-morphing geometry transition. */
+.desk-window.is-entering { animation: win-open 180ms cubic-bezier(0.16, 1, 0.3, 1); }
+.desk-window.is-closing { animation: win-close 140ms cubic-bezier(0.4, 0, 1, 1) forwards; pointer-events: none; }
+.desk-window.is-minimizing { animation: win-minimize 240ms cubic-bezier(0.5, 0, 0.9, 0.5) forwards; pointer-events: none; }
+.desk-window.is-restoring { animation: win-restore 240ms cubic-bezier(0.2, 0.7, 0.3, 1); }
+@media (min-width: 761px) {
+  .desk-window.is-morphing {
+    transition: left 240ms cubic-bezier(0.2, 0.8, 0.2, 1), top 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      width 240ms cubic-bezier(0.2, 0.8, 0.2, 1), height 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 150ms ease, box-shadow 150ms ease;
+  }
+}
+
+@keyframes win-open { from { opacity: 0; transform: scale(0.94); } }
+@keyframes win-close { to { opacity: 0; transform: scale(0.94); } }
+@keyframes win-minimize {
+  to {
+    opacity: 0;
+    transform: translate(var(--genie-x, 0px), var(--genie-y, 0px)) scale(var(--genie-sx, 0.94), var(--genie-sy, 0.94));
+  }
+}
+@keyframes win-restore {
+  from {
+    opacity: 0;
+    transform: translate(var(--genie-x, 0px), var(--genie-y, 0px)) scale(var(--genie-sx, 0.94), var(--genie-sy, 0.94));
+  }
+}
 
 .desk-titlebar {
   display: flex;
@@ -97,8 +127,13 @@
     margin-inline: auto;
     padding: clamp(32px, 8svh, 96px) 12px calc(108px + env(safe-area-inset-bottom));
   }
-  .desk-window, .desk-window.is-max { position: relative; inset: auto; width: 100%; height: auto; scroll-margin-top: 8px; }
+  .desk-window, .desk-window.is-max { position: relative; inset: auto; left: auto; top: auto; width: 100%; height: auto; scroll-margin-top: 8px; }
   .desk-titlebar, .desk-titlebar:active { cursor: default; touch-action: auto; }
   .desk-controls button { width: 44px; height: 44px; }
   .desk-controls .desk-maximize, .desk-resize { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desk-window, .desk-window.is-morphing { transition: none; }
+  .desk-window.is-entering, .desk-window.is-closing, .desk-window.is-minimizing, .desk-window.is-restoring { animation: none; }
 }

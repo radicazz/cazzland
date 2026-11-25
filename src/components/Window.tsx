@@ -1,5 +1,6 @@
-import { useLayoutEffect, useRef, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type AnimationEvent, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
 import { type Bounds } from "../desktop/geometry";
+import { FALLBACK_MS, MOTION, genieVars, prefersReducedMotion, type WindowPhase } from "../desktop/motion";
 import { PANELS, type PanelId } from "../desktop/panels";
 import type { WindowState } from "../desktop/windowReducer";
 import { PanelContent } from "../panels";
@@ -14,6 +15,10 @@ type Props = {
   active: boolean;
   zIndex: number;
   isDesktop: boolean;
+  /** Exit animation running; the window is already closed in state. */
+  closing?: boolean;
+  launcherRect: (id: PanelId) => DOMRect | undefined;
+  onExited?: (id: PanelId) => void;
   register: (id: PanelId, element: HTMLElement | null) => void;
   onRaise: (id: PanelId) => void;
   onMinimize: (id: PanelId) => void;
@@ -24,7 +29,7 @@ type Props = {
 };
 
 export function Window({
-  id, bounds, state, active, zIndex, isDesktop, register,
+  id, bounds, state, active, zIndex, isDesktop, closing = false, launcherRect, onExited, register,
   onRaise, onMinimize, onClose, onToggleMaximize, onPointerGesture, onKeyGesture,
 }: Props) {
   const { label, title = label } = PANELS[id];
@@ -32,6 +37,66 @@ export function Window({
   const canMove = isDesktop && !maximized;
   const maximizeButton = useRef<HTMLButtonElement>(null);
   const first = useRef(true);
+  const element = useRef<HTMLElement>(null);
+
+  // Motion phase. Derived during render so the class lands in the same commit as the state change.
+  const [phase, setPhase] = useState<WindowPhase>(() => (prefersReducedMotion() ? "idle" : "entering"));
+  const [seen, setSeen] = useState({ minimized, maximized });
+  if (seen.minimized !== minimized || seen.maximized !== maximized) {
+    setSeen({ minimized, maximized });
+    if (prefersReducedMotion()) {
+      if (phase !== "idle") setPhase("idle");
+    } else if (seen.minimized !== minimized) {
+      setPhase(minimized ? "minimizing" : "restoring");
+    } else if (isDesktop) {
+      setPhase("morphing");
+    }
+  }
+
+  useLayoutEffect(() => {
+    register(id, closing ? null : element.current);
+    return () => register(id, null);
+  }, [id, closing, register]);
+
+  // Genie: aim the window at its dock launcher before the animation's first frame.
+  useLayoutEffect(() => {
+    const node = element.current;
+    if (!node || (phase !== "minimizing" && phase !== "restoring")) return;
+    const launcher = isDesktop ? launcherRect(id) : undefined;
+    const workspace = node.offsetParent?.getBoundingClientRect();
+    if (!launcher || !workspace) {
+      for (const name of ["x", "y", "sx", "sy"]) node.style.removeProperty(`--genie-${name}`);
+      return;
+    }
+    const v = genieVars(
+      { x: workspace.left + node.offsetLeft, y: workspace.top + node.offsetTop, width: node.offsetWidth, height: node.offsetHeight },
+      launcher,
+    );
+    node.style.setProperty("--genie-x", `${v.x}px`);
+    node.style.setProperty("--genie-y", `${v.y}px`);
+    node.style.setProperty("--genie-sx", String(v.sx));
+    node.style.setProperty("--genie-sy", String(v.sy));
+  }, [phase, id, isDesktop, launcherRect]);
+
+  // Timeout fallback: animationend never fires under reduced motion or display:none.
+  useEffect(() => {
+    if (phase === "idle") return;
+    const ms = { entering: MOTION.open, minimizing: MOTION.genie, restoring: MOTION.genie, morphing: MOTION.morph }[phase];
+    const timer = setTimeout(() => setPhase("idle"), ms + FALLBACK_MS);
+    return () => clearTimeout(timer);
+  }, [phase]);
+
+  useEffect(() => {
+    if (!closing) return;
+    const timer = setTimeout(() => onExited?.(id), (prefersReducedMotion() ? 0 : MOTION.close) + FALLBACK_MS);
+    return () => clearTimeout(timer);
+  }, [closing, id, onExited]);
+
+  function onAnimationEnd(event: AnimationEvent<HTMLElement>) {
+    if (event.target !== event.currentTarget) return;
+    if (closing) onExited?.(id);
+    else if (phase !== "idle" && phase !== "morphing") setPhase("idle");
+  }
 
   // Maximizing removes the focused title/resize grip from the tab order; keep keyboard focus in the window.
   useLayoutEffect(() => {
@@ -43,13 +108,18 @@ export function Window({
     <section
       id={`window-${id}`}
       data-window={id}
-      ref={(element) => register(id, element)}
+      ref={element}
       aria-label={label}
       tabIndex={-1}
-      hidden={minimized}
-      onPointerDown={() => onRaise(id)}
+      hidden={minimized && phase !== "minimizing"}
+      inert={closing || phase === "minimizing"}
+      onAnimationEnd={onAnimationEnd}
+      onTransitionEnd={(event) => {
+        if (phase === "morphing" && event.target === event.currentTarget && event.propertyName === "height") setPhase("idle");
+      }}
+      onPointerDown={() => { if (phase === "morphing") setPhase("idle"); onRaise(id); }}
       onFocusCapture={() => onRaise(id)}
-      className={`desk-window desk-${id}${maximized ? " is-max" : ""}${active ? " is-active" : ""}`}
+      className={`desk-window desk-${id}${maximized ? " is-max" : ""}${active ? " is-active" : ""}${closing ? " is-closing" : phase === "idle" ? "" : ` is-${phase}`}`}
       style={{
         "--window-x": bounds.x + "px",
         "--window-y": bounds.y + "px",
