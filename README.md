@@ -29,7 +29,7 @@ Start with [AGENTS.md](AGENTS.md), which links to the docs in [docs/](docs/): ar
 
 Import the repository with the repository root as the project root. [vercel.json](vercel.json) selects the Vite preset, installs with `pnpm install --frozen-lockfile` (Vercel selects pnpm 10 from the v9 lockfile), builds with `pnpm run build`, publishes `dist/`, and sets security headers (including a Content-Security-Policy). The video endpoint needs no environment variables or API key. [Vercel’s Vite documentation](https://vercel.com/docs/frameworks/frontend/vite)
 
-Before the first production deploy, check a preview: the home page loads with a clean console, `/api/latest-video` returns JSON, and set an absolute `og:image` URL in `index.html` once the domain is known.
+Before the first production deploy, check a preview: the home page loads with a clean console, `/api/latest-video` returns JSON. The site is served at https://cazz.tech (the canonical and OG URLs in `index.html` assume it).
 
 ## License
 
