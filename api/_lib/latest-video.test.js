@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import handler from './latest-video.js';
-import { latestFromFeed } from './_lib/feed.js';
+import handler from '../latest-video.js';
+import { latestFromFeed } from './feed.js';
 
 const entry = (inner, attrs = '') => `<feed><entry${attrs}>${inner}</entry></feed>`;
 const fields = (title = '<title>Hello</title>') =>
